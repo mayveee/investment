@@ -1,6 +1,13 @@
 // store/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+interface AuthUser {
+    uid: string
+    email: string | null
+    displayName: string | null
+    photoURL: string | null
+}
+
 interface AuthState {
     user: any | null
 }
@@ -13,7 +20,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser(state, action: PayloadAction<any>) {
+        setUser(state, action: PayloadAction<AuthUser>) {
             state.user = action.payload  // user를 업데이트하는 리듀서
         },
         clearUser(state) {

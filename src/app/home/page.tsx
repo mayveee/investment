@@ -22,6 +22,7 @@ export default function HomePage() {
         {user ? (
             <div>
                 <p>{user.displayName}님 환영합니다!</p>
+                <p>{user.balance.toLocaleString()}원</p>
             </div> 
         ) : (
             <p>로그인 하셈</p>

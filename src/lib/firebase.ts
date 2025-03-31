@@ -1,6 +1,7 @@
 // lib/firebase.ts
 import { initializeApp } from "firebase/app"; 
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getFirestore  } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -20,4 +21,5 @@ const auth = getAuth(app);
 // Google 인증 제공자 가져오기
 const provider = new GoogleAuthProvider();
 
+export const db = getFirestore(app);
 export { auth, provider };

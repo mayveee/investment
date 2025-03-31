@@ -3,11 +3,12 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { auth } from '@/lib/firebase'
+import { auth, db } from '@/lib/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useDispatch } from 'react-redux'
 import { setUser, clearUser } from '@/store/authSlice'
 import MenuNavBar from '@/components/MenuNavBar'
+import { doc, getDoc } from 'firebase/firestore'
 
 export default function AppInitializer({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -16,11 +17,25 @@ export default function AppInitializer({ children }: { children: React.ReactNode
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUser(user))
-      } else {
-        dispatch(clearUser())
+      const handleAuth = async () => {
+        if (user) {
+          const userRef = doc(db, 'users', user.uid)
+          const snapshot = await getDoc(userRef)
+          const userData = snapshot.data()
+  
+          dispatch(setUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            balance: userData?.balance ?? 1000000,
+          }))
+        } else {
+          dispatch(clearUser())
+        }
       }
+
+      handleAuth()
     })
     return () => unsubscribe()
   }, [dispatch])
