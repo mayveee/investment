@@ -1,64 +1,63 @@
-// app/stock/page.tsx
+// 📄 app/stock/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
 
-const fetchStockData = async () => {
-  // 여기서는 하드코딩된 데이터를 반환
-  return [
-    { symbol: 'AAPL', name: 'Apple Inc.', price: 145.09, change: -1.23 },
-    { symbol: 'GOOGL', name: 'Google LLC', price: 2745.69, change: 12.30 },
-    { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 3450.70, change: 8.45 },
-  ]
-}
+interface Coin {
+    id: string
+    name: string
+    symbol: string
+    price: number
+    marketCap: number
+    image: string
+    updatedAt: string
+  }
 
 export default function StockPage() {
-    const [stocks, setStocks] = useState<any[]>([])
-    const router = useRouter()
-    const user = useSelector((state: RootState) => state.auth.user)
+  const [coins, setCoins] = useState<Coin[]>([])
 
-    useEffect(() => {
-        if (!user) {
-            router.push('/')
-        }
-    }, [user, router])
-    
-    useEffect(() => {
-        
-        const loadStockData = async () => {
-        const data = await fetchStockData()
-        setStocks(data)
-        }
+  useEffect(() => {
+    const fetchCoins = async () => {
+      const res = await fetch('/api/coins')
+      const result = await res.json()
+      setCoins(result)
+    }
 
-        loadStockData()
-    }, [])
+    fetchCoins()
+    const interval = setInterval(fetchCoins, 10000) // 10초마다 갱신
+    return () => clearInterval(interval)
+  }, [])
 
-    return (
-        <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">주식 보기</h1>
-        <table className="w-full table-auto">
-            <thead>
-            <tr>
-                <th className="border px-4 py-2">종목</th>
-                <th className="border px-4 py-2">가격</th>
-                <th className="border px-4 py-2">변동폭</th>
+  return (
+    <div className="p-6 overflow-auto">
+      <h1 className="text-2xl font-bold mb-4">📊 시가총액 상위 100 코인</h1>
+      <table className="w-full table-auto border-collapse">
+        <thead>
+          <tr className="bg-gray-100 text-left">
+            <th className="px-4 py-2">코인</th>
+            <th className="px-4 py-2">심볼</th>
+            <th className="px-4 py-2 text-right">현재가 (KRW)</th>
+            <th className="px-4 py-2 text-right">시가총액</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coins.map((coin) => (
+            <tr key={coin.id} className="border-b hover:bg-gray-50">
+              <td className="px-4 py-2 flex items-center gap-2">
+                <img src={coin.image} alt={coin.name} className="w-5 h-5" />
+                {coin.name}
+              </td>
+              <td className="px-4 py-2">{coin.symbol}</td>
+              <td className="px-4 py-2 text-right text-green-700 font-semibold">
+                {coin.price.toLocaleString()} 원
+              </td>
+              <td className="px-4 py-2 text-right text-gray-600">
+                {coin.marketCap.toLocaleString()} 원
+              </td>
             </tr>
-            </thead>
-            <tbody>
-            {stocks.map((stock) => (
-                <tr key={stock.symbol}>
-                <td className="border px-4 py-2">{stock.name}</td>
-                <td className="border px-4 py-2">{stock.price}</td>
-                <td className={`border px-4 py-2 ${stock.change < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                    {stock.change}
-                </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-        </div>
-    )
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
