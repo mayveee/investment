@@ -1,4 +1,4 @@
-// 📄 app/api/price/route.ts
+// app/api/price/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(_req: NextRequest) {

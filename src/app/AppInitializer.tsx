@@ -43,8 +43,12 @@ export default function AppInitializer({ children }: { children: React.ReactNode
   return (
     <html lang="ko">
       <body>
-        <main>{children}</main>
-        {!isHomePage && <MenuNavBar />}
+        <div className='flex flex-col min-h-screen relative'>
+          <main className='flex-1 overflow-auto pb-20'>
+            {children}
+          </main>
+          {!isHomePage && <MenuNavBar />}
+        </div>
       </body>
     </html>
   )

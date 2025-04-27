@@ -16,6 +16,10 @@ export default function HomePage() {
     }
   }, [user, router])
 
+  if (!user) {
+    return null
+  }
+  
   return (
     <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">홈 페이지</h1>

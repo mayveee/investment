@@ -1,4 +1,4 @@
-// 📄 lib/auth.ts
+// lib/login.ts
 import { signInWithPopup } from 'firebase/auth'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { auth, provider, db } from './firebase'

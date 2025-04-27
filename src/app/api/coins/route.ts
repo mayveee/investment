@@ -14,12 +14,13 @@ export async function GET() {
     const data = await res.json()
   
     const formatted = data.map((coin: any) => ({
-      id: coin.id, // ✅ 여기에 유일한 id 포함
+      id: coin.id,
       name: coin.name,
       symbol: coin.symbol.toUpperCase(),
-      price: coin.current_price,
-      marketCap: coin.market_cap,
+      current_price: coin.current_price,
+      market_cap: coin.market_cap,
       image: coin.image,
+      price_change_percentage_24h: coin.price_change_percentage_24h,
       updatedAt: new Date().toISOString(),
     }))
   
